@@ -22,23 +22,31 @@ public interface CommandRegisterer<P extends JavaPlugin> extends MessageReload {
 	P plugin();
 	Messenger<P> commandMessenger();
 	Messenger<P> debugMessenger();
-
+	boolean isDebug();
 
 	default void registerCommands(List<String> packages, PaperCommandManager<?> commandManager){
 		for (String subPackage : packages){
-			try (ScanResult scanResult = new ClassGraph()
-					.enableAllInfo().acceptPackages(subPackage).scan()) {
-				ClassInfoList classInfo = scanResult.getClassesWithAnnotation(Cloud.class);
-				List<String> classes = classInfo.getNames();
-				for (String clazzName : classes){
-					plugin().getLogger().info("Registering command: "+ clazzName);
-					Class<?> clazz = Class.forName(clazzName);
-					registerCommand(clazz, commandManager);
-					plugin().getLogger().info("Registered command: "+ clazzName);
+			registerCommands(subPackage, commandManager);
+		}
+	}
+
+	default void registerCommands(String pkg, PaperCommandManager<?> commandManager){
+		try (ScanResult scanResult = new ClassGraph()
+				.enableAllInfo().acceptPackages(pkg).scan()){
+			ClassInfoList classInfo = scanResult.getClassesWithAnnotation(Cloud.class);
+			List<String> classes = classInfo.getNames();
+			for (String clazzName : classes){
+				if (isDebug()) {
+					plugin().getLogger().info("Registering command: " + clazzName);
 				}
-			} catch (ClassNotFoundException e) {
-				throw new RuntimeException(e);
+				Class<?> clazz = Class.forName(clazzName);
+				registerCommand(clazz, commandManager);
+				if (isDebug()) {
+					plugin().getLogger().info("Registered command: " + clazzName);
+				}
 			}
+		} catch (ClassNotFoundException e) {
+			throw new RuntimeException(e);
 		}
 	}
 

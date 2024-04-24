@@ -52,6 +52,11 @@ public class ExamplePlugin extends JavaPlugin implements CommandRegisterer<Examp
 	public Messenger<ExamplePlugin> debugMessenger() {
 		return messenger;
 	}
+	
+	@Override
+    public boolean isDebug(){
+		return false;
+    }
 }
 ```
 
