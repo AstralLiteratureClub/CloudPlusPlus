@@ -3,7 +3,7 @@ package bet.astral.cloudplusplus.command;
 
 import bet.astral.cloudplusplus.CommandRegisterer;
 import bet.astral.cloudplusplus.MessageReload;
-import bet.astral.messenger.Messenger;
+import bet.astral.messenger.v2.Messenger;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.incendo.cloud.Command;
@@ -14,8 +14,7 @@ public class CloudPPCommand<P extends JavaPlugin, C extends CommandSender> imple
 	protected final PaperCommandManager<C> commandManager;
 	protected final P plugin;
 	protected final CommandRegisterer<P> registerer;
-	protected Messenger<P> messenger;
-	protected Messenger<P> debugMessenger;
+	protected Messenger messenger;
 
 	public CloudPPCommand(P plugin, CommandRegisterer<P> registerer, PaperCommandManager<C> commandManager) {
 		this.plugin = plugin;
@@ -38,7 +37,6 @@ public class CloudPPCommand<P extends JavaPlugin, C extends CommandSender> imple
 	@Override
 	public void reloadMessengers() {
 		this.messenger = registerer.commandMessenger();
-		this.debugMessenger = registerer.debugMessenger();
 	}
 
 	public void command(Command.Builder<C> command){

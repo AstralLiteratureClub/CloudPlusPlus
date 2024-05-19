@@ -4,7 +4,7 @@ package bet.astral.cloudplusplus;
 import bet.astral.cloudplusplus.annotations.Cloud;
 import bet.astral.cloudplusplus.annotations.DoNotReflect;
 import bet.astral.cloudplusplus.command.CloudPPCommand;
-import bet.astral.messenger.Messenger;
+import bet.astral.messenger.v2.Messenger;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfoList;
 import io.github.classgraph.ScanResult;
@@ -20,8 +20,7 @@ import java.util.List;
 public interface CommandRegisterer<P extends JavaPlugin> extends MessageReload {
 	ArrayList<CloudPPCommand<?, ?>> commands = new ArrayList<>();
 	P plugin();
-	Messenger<P> commandMessenger();
-	Messenger<P> debugMessenger();
+	Messenger commandMessenger();
 	boolean isDebug();
 
 	default void registerCommands(List<String> packages, PaperCommandManager<?> commandManager){
