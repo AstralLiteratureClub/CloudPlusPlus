@@ -2,13 +2,21 @@ package bet.astral.cloudplusplus.command;
 
 import bet.astral.cloudplusplus.CommandRegisterer;
 import bet.astral.messenger.v2.Messenger;
+import bet.astral.messenger.v2.component.ComponentType;
+import bet.astral.messenger.v2.translation.TranslationKey;
+import net.kyori.adventure.text.Component;
 import org.incendo.cloud.Command;
 import org.incendo.cloud.CommandManager;
 import org.incendo.cloud.description.Description;
+import org.incendo.cloud.minecraft.extras.RichDescription;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Locale;
 
 public class CPPCommand<C> {
 	protected final CommandManager<C> commandManager;
 	protected final CommandRegisterer<C> registerer;
+	protected Locale locale = Locale.US;
 	protected Messenger messenger;
 
 	public CPPCommand(CommandRegisterer<C> registerer, CommandManager<C> commandManager){
@@ -30,5 +38,13 @@ public class CPPCommand<C> {
 	public Command.Builder<C> commandBuilder(String name,
 	                                                     String... aliases){
 		return commandManager.commandBuilder(name, aliases);
+	}
+
+	public RichDescription loadDescription(@NotNull TranslationKey translationKey){
+		Component component = messenger.parseComponent(translationKey, locale, ComponentType.CHAT);
+		if (component == null){
+			return RichDescription.translatable(translationKey.getKey());
+		}
+		return RichDescription.of(component);
 	}
 }
