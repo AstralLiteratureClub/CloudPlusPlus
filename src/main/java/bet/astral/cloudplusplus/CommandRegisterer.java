@@ -20,39 +20,42 @@ import java.util.List;
 
 public interface CommandRegisterer<C> {
 	ArrayList<CPPCommand<?>> commands = new ArrayList<>();
+	CommandManager<C> getCommandManager();
 	Logger getSlf4jLogger();
 	Messenger getMessenger();
 	Receiver convertToReceiver(@NotNull C c);
 
 	boolean isDebug();
 
-	default void registerCommands(List<String> packages, CommandManager<?> commandManager){
+	default void registerCommands(List<String> packages){
 		for (String subPackage : packages){
-			registerCommands(subPackage, commandManager);
+			registerCommands(subPackage);
 		}
 	}
 
-	default void registerCommands(String pkg, CommandManager<?> commandManager){
-		try (ScanResult scanResult = new ClassGraph()
-				.enableAllInfo().acceptPackages(pkg).scan()){
-			ClassInfoList classInfo = scanResult.getClassesWithAnnotation(Cloud.class);
-			List<String> classes = classInfo.getNames();
-			for (String clazzName : classes){
-				if (isDebug()) {
-					getSlf4jLogger().info("Registering command: " + clazzName);
+	default void registerCommands(String... pkg){
+		for (String subPackage : pkg) {
+			try (ScanResult scanResult = new ClassGraph()
+					.enableAllInfo().acceptPackages(subPackage).scan()) {
+				ClassInfoList classInfo = scanResult.getClassesWithAnnotation(Cloud.class);
+				List<String> classes = classInfo.getNames();
+				for (String clazzName : classes) {
+					if (isDebug()) {
+						getSlf4jLogger().info("Registering command: " + clazzName);
+					}
+					Class<?> clazz = Class.forName(clazzName);
+					registerCommand(clazz);
+					if (isDebug()) {
+						getSlf4jLogger().info("Registered command: " + clazzName);
+					}
 				}
-				Class<?> clazz = Class.forName(clazzName);
-				registerCommand(clazz, commandManager);
-				if (isDebug()) {
-					getSlf4jLogger().info("Registered command: " + clazzName);
-				}
+			} catch (ClassNotFoundException e) {
+				throw new RuntimeException(e);
 			}
-		} catch (ClassNotFoundException e) {
-			throw new RuntimeException(e);
 		}
 	}
 
-	default void registerCommand(Class<?> clazz, CommandManager<?> commandManager) {
+	default void registerCommand(Class<?> clazz) {
 		/*
 		 * This is the cloud command framework
 		 */
@@ -64,7 +67,7 @@ public interface CommandRegisterer<C> {
 		}
 		try {
 			constructor.setAccessible(true);
-			CPPCommand<?> reload = (CPPCommand<?>) constructor.newInstance(this, commandManager);
+			CPPCommand<?> reload = (CPPCommand<?>) constructor.newInstance(this, getCommandManager());
 			commands.add(reload);
 			if (isDebug()) {
 				getSlf4jLogger().info("Loaded cloud command: " + clazz.getName());
