@@ -12,6 +12,7 @@ import org.incendo.cloud.minecraft.extras.RichDescription;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
+import java.util.function.Consumer;
 
 public class CPPCommand<C> {
 	protected final CommandManager<C> commandManager;
@@ -29,16 +30,40 @@ public class CPPCommand<C> {
 		commandManager.command(command);
 	}
 
-	public Command.Builder<C> commandBuilder(String name,
-	                                                     Description description,
-	                                                     String... aliases
-	                                                     ){
-		return commandManager.commandBuilder(name, description, aliases);
+	public RegistrableCommand<C> command(@NotNull String name,
+	                                    @NotNull TranslationKey descriptionKey,
+	                                    @NotNull Consumer<Command.Builder<C>> builder,
+	                                    @NotNull String... aliases){
+		return command(name,
+				aliases,
+				descriptionKey,
+				builder);
 	}
-	public Command.Builder<C> commandBuilder(String name,
-	                                                     String... aliases){
-		return commandManager.commandBuilder(name, aliases);
+	public RegistrableCommand<C> command(@NotNull String name,
+	                                    @NotNull String[] args,
+	                                    @NotNull TranslationKey descriptionKey,
+	                                    @NotNull Consumer<Command.Builder<C>> builder){
+		return command(name, args, loadDescription(descriptionKey), builder);
 	}
+
+	public RegistrableCommand<C> command(@NotNull String name,
+	                                     @NotNull Description description,
+	                                     @NotNull Consumer<Command.Builder<C>> builder,
+	                                     @NotNull String... aliases){
+		return command(name,
+				aliases,
+				description,
+				builder);
+	}
+	public RegistrableCommand<C> command(@NotNull String name,
+	                                     @NotNull String[] args,
+	                                     @NotNull Description description,
+	                                     @NotNull Consumer<Command.Builder<C>> builder){
+		Command.Builder<C> bldr = commandManager.commandBuilder(name, description, args);
+		builder.accept(bldr);
+		return new RegistrableCommand<>(commandManager, bldr);
+	}
+
 
 	public RichDescription loadDescription(@NotNull TranslationKey translationKey){
 		Component component = messenger.parseComponent(translationKey, locale, ComponentType.CHAT);
@@ -46,5 +71,19 @@ public class CPPCommand<C> {
 			return RichDescription.translatable(translationKey.getKey());
 		}
 		return RichDescription.of(component);
+	}
+
+	public static class RegistrableCommand<C> {
+		final CommandManager<C> commandManager;
+		final Command.Builder<C> builder;
+
+		public RegistrableCommand(CommandManager<C> commandManager, Command.Builder<C> builder) {
+			this.commandManager = commandManager;
+			this.builder = builder;
+		}
+
+		public void register(){
+			commandManager.command(builder);
+		}
 	}
 }
