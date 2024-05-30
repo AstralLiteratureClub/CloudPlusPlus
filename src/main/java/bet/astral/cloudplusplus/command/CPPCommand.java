@@ -14,6 +14,7 @@ public class CPPCommand<C> {
 	public CPPCommand(CommandRegisterer<C> registerer, CommandManager<C> commandManager){
 		this.registerer = registerer;
 		this.commandManager = commandManager;
+		this.messenger = registerer.getMessenger();
 	}
 
 	public void command(Command.Builder<C> command){
