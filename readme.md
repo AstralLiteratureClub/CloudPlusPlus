@@ -65,7 +65,7 @@ Creating an example command which sends "Hey!" to the player.
 package bet.astral.example.commands;
 
 import bet.astral.cloudplusplus.annotations.Cloud;
-import bet.astral.cloudplusplus.command.CloudPPCommand;
+import bet.astral.cloudplusplus.command.CPPCommand;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.incendo.cloud.paper.PaperCommandManager;
@@ -90,7 +90,7 @@ Example command extending CloudPPCommand to have easier commands
 ```java
 package bet.astral.example.commands;
 
-import bet.astral.cloudplusplus.command.CloudPPCommand;
+import bet.astral.cloudplusplus.command.CPPCommand;
 import bet.astral.example.ExamplePlugin;
 import org.bukkit.command.CommandSender;
 import org.incendo.cloud.paper.PaperCommandManager;
