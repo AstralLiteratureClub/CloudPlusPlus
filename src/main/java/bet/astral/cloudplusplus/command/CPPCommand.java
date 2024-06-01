@@ -59,7 +59,7 @@ public class CPPCommand<C> {
 	                                     @NotNull String[] args,
 	                                     @NotNull Description description,
 	                                     @NotNull Consumer<Command.Builder<C>> builder){
-		Command.Builder<C> bldr = commandManager.commandBuilder(name, description, args);
+		Command.Builder<C> bldr = commandManager.commandBuilder(name, description, args).commandDescription(description);
 		builder.accept(bldr);
 		return new RegistrableCommand<>(commandManager, bldr);
 	}
