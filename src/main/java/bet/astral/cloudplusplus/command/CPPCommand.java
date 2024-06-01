@@ -12,7 +12,7 @@ import org.incendo.cloud.minecraft.extras.RichDescription;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
-import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class CPPCommand<C> {
 	protected final CommandManager<C> commandManager;
@@ -32,7 +32,7 @@ public class CPPCommand<C> {
 
 	public RegistrableCommand<C> command(@NotNull String name,
 	                                    @NotNull TranslationKey descriptionKey,
-	                                    @NotNull Consumer<Command.Builder<C>> builder,
+	                                    @NotNull Function<Command.Builder<C>, Command.Builder<C>> builder,
 	                                    @NotNull String... aliases){
 		return command(name,
 				aliases,
@@ -42,13 +42,13 @@ public class CPPCommand<C> {
 	public RegistrableCommand<C> command(@NotNull String name,
 	                                    @NotNull String[] args,
 	                                    @NotNull TranslationKey descriptionKey,
-	                                    @NotNull Consumer<Command.Builder<C>> builder){
+	                                    @NotNull Function<Command.Builder<C>, Command.Builder<C>> builder){
 		return command(name, args, loadDescription(descriptionKey), builder);
 	}
 
 	public RegistrableCommand<C> command(@NotNull String name,
 	                                     @NotNull Description description,
-	                                     @NotNull Consumer<Command.Builder<C>> builder,
+	                                     @NotNull Function<Command.Builder<C>, Command.Builder<C>> builder,
 	                                     @NotNull String... aliases){
 		return command(name,
 				aliases,
@@ -58,9 +58,9 @@ public class CPPCommand<C> {
 	public RegistrableCommand<C> command(@NotNull String name,
 	                                     @NotNull String[] args,
 	                                     @NotNull Description description,
-	                                     @NotNull Consumer<Command.Builder<C>> builder){
+	                                     @NotNull Function<Command.Builder<C>, Command.Builder<C>> builder){
 		Command.Builder<C> bldr = commandManager.commandBuilder(name, description, args).commandDescription(description);
-		builder.accept(bldr);
+		bldr = builder.apply(bldr);
 		return new RegistrableCommand<>(commandManager, bldr);
 	}
 
