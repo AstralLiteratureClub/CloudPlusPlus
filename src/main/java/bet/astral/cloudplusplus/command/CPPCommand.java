@@ -26,42 +26,41 @@ public class CPPCommand<C> {
 		this.messenger = registerer.getMessenger();
 	}
 
-	public void command(Command.Builder<C> command){
+	public void command(Command.Builder<? extends C> command){
 		commandManager.command(command);
 	}
 
-	public RegistrableCommand<C> command(@NotNull String name,
+	public RegistrableCommand<? extends C> command(@NotNull String name,
 	                                    @NotNull TranslationKey descriptionKey,
-	                                    @NotNull Function<Command.Builder<C>, Command.Builder<C>> builder,
+	                                    @NotNull Function<Command.Builder<C>, Command.Builder<? extends C>> builder,
 	                                    @NotNull String... aliases){
 		return command(name,
 				aliases,
 				descriptionKey,
 				builder);
 	}
-	public RegistrableCommand<C> command(@NotNull String name,
+	public RegistrableCommand<? extends C> command(@NotNull String name,
 	                                    @NotNull String[] args,
 	                                    @NotNull TranslationKey descriptionKey,
-	                                    @NotNull Function<Command.Builder<C>, Command.Builder<C>> builder){
+	                                    @NotNull Function<Command.Builder<C>, Command.Builder<? extends C>> builder){
 		return command(name, args, loadDescription(descriptionKey), builder);
 	}
 
-	public RegistrableCommand<C> command(@NotNull String name,
+	public RegistrableCommand<? extends C> command(@NotNull String name,
 	                                     @NotNull Description description,
-	                                     @NotNull Function<Command.Builder<C>, Command.Builder<C>> builder,
+	                                     @NotNull Function<Command.Builder<C>, Command.Builder<? extends C>> builder,
 	                                     @NotNull String... aliases){
 		return command(name,
 				aliases,
 				description,
 				builder);
 	}
-	public RegistrableCommand<C> command(@NotNull String name,
+	public RegistrableCommand<? extends C> command(@NotNull String name,
 	                                     @NotNull String[] args,
 	                                     @NotNull Description description,
-	                                     @NotNull Function<Command.Builder<C>, Command.Builder<C>> builder){
+	                                     @NotNull Function<Command.Builder<C>, Command.Builder<? extends C>> builder){
 		Command.Builder<C> bldr = commandManager.commandBuilder(name, description, args).commandDescription(description);
-		bldr = builder.apply(bldr);
-		return new RegistrableCommand<>(commandManager, bldr);
+		return new RegistrableCommand<>(commandManager, builder.apply(bldr));
 	}
 
 
@@ -75,9 +74,9 @@ public class CPPCommand<C> {
 
 	public static class RegistrableCommand<C> {
 		final CommandManager<C> commandManager;
-		final Command.Builder<C> builder;
+		final Command.Builder<? extends C> builder;
 
-		public RegistrableCommand(CommandManager<C> commandManager, Command.Builder<C> builder) {
+		public RegistrableCommand(CommandManager<C> commandManager, Command.Builder<? extends C> builder) {
 			this.commandManager = commandManager;
 			this.builder = builder;
 		}
