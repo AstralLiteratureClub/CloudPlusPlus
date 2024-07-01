@@ -96,6 +96,41 @@ public class CPPCommand<C> {
 		return new RegistrableCommand<>(commandManager, builder.apply(bldr));
 	}
 
+	public RegistrableCommand<? extends C> command(RegistrableCommand<C> command, @NotNull String name,
+	                                               @NotNull TranslationKey descriptionKey,
+	                                               @NotNull Function<Command.Builder<C>, Command.Builder<? extends C>> builder,
+	                                               @NotNull String... aliases){
+		return command(command,
+				name,
+				aliases,
+				descriptionKey,
+				builder);
+	}
+	public RegistrableCommand<? extends C> command(RegistrableCommand<C> command, @NotNull String name,
+	                                               @NotNull String[] args,
+	                                               @NotNull TranslationKey descriptionKey,
+	                                               @NotNull Function<Command.Builder<C>, Command.Builder<? extends C>> builder){
+		return command(command, name, args, loadDescription(descriptionKey), builder);
+	}
+
+	public RegistrableCommand<? extends C> command(RegistrableCommand<C> command, @NotNull String name,
+	                                               @NotNull Description description,
+	                                               @NotNull Function<Command.Builder<C>, Command.Builder<? extends C>> builder,
+	                                               @NotNull String... aliases){
+		return command(command, name,
+				aliases,
+				description,
+				builder);
+	}
+	public RegistrableCommand<? extends C> command(RegistrableCommand<C> command, @NotNull String name,
+	                                               @NotNull String[] args,
+	                                               @NotNull Description description,
+	                                               @NotNull Function<Command.Builder<C>, Command.Builder<? extends C>> builder){
+		Command.Builder<C> bldr = (Command.Builder<C>) command.builder.literal(name, description, args).commandDescription(description);
+		return new RegistrableCommand<>(commandManager, builder.apply(bldr));
+	}
+
+
 
 
 	public RichDescription loadDescription(@NotNull TranslationKey translationKey){
