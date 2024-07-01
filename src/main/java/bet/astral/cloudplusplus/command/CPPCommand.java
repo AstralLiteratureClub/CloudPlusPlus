@@ -153,5 +153,9 @@ public class CPPCommand<C> {
 		public void register(){
 			commandManager.command(builder);
 		}
+
+		public Command.Builder<? extends C> getBuilder() {
+			return builder;
+		}
 	}
 }
