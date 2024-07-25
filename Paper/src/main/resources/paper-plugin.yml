@@ -1,0 +1,4 @@
+name: Paper
+version: '1.0-SNAPSHOT'
+main: bet.astral.cloudplusplus.paper.Paper
+api-version: '1.21'

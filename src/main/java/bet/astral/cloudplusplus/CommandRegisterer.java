@@ -61,7 +61,7 @@ public interface CommandRegisterer<C> {
 		 */
 		Constructor<?> constructor = null;
 		try {
-			constructor = getConstructor(clazz, this.getClass(), getClass());
+			constructor = getConstructor(clazz, this.getClass(), getCommandManager().getClass());
 		} catch (NoSuchMethodException e) {
 			throw new RuntimeException(e);
 		}
