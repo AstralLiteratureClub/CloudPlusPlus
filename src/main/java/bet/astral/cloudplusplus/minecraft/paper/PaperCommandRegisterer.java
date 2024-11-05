@@ -1,4 +1,4 @@
-package bet.astral.cloudplusplus.paper;
+package bet.astral.cloudplusplus.minecraft.paper;
 
 import bet.astral.cloudplusplus.CommandRegisterer;
 import org.incendo.cloud.paper.PaperCommandManager;

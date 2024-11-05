@@ -1,4 +1,4 @@
-package bet.astral.cloudplusplus.paper.bootstrap;
+package bet.astral.cloudplusplus.minecraft.paper.bootstrap;
 
 import org.jetbrains.annotations.NotNull;
 

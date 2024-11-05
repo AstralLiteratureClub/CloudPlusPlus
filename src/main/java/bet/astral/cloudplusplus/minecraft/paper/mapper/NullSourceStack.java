@@ -1,4 +1,4 @@
-package bet.astral.cloudplusplus.paper.mapper;
+package bet.astral.cloudplusplus.minecraft.paper.mapper;
 
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import org.bukkit.Location;
